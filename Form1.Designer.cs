@@ -32,20 +32,23 @@
             this.wbMain = new System.Windows.Forms.WebBrowser();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtCopy = new System.Windows.Forms.TextBox();
             this.lstLog = new System.Windows.Forms.ListBox();
             this.tmrPos = new System.Windows.Forms.Timer(this.components);
-            this.txtCopy = new System.Windows.Forms.TextBox();
+            this.txtUrl = new System.Windows.Forms.TextBox();
+            this.btnHtmlSource = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // wbMain
             // 
-            this.wbMain.Location = new System.Drawing.Point(12, 12);
+            this.wbMain.Location = new System.Drawing.Point(12, 42);
             this.wbMain.MinimumSize = new System.Drawing.Size(20, 20);
             this.wbMain.Name = "wbMain";
-            this.wbMain.Size = new System.Drawing.Size(1019, 537);
+            this.wbMain.Size = new System.Drawing.Size(1019, 507);
             this.wbMain.TabIndex = 0;
             this.wbMain.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbMain_DocumentCompleted);
+            this.wbMain.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbMain_Navigating);
             // 
             // button1
             // 
@@ -70,6 +73,13 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Controls";
             // 
+            // txtCopy
+            // 
+            this.txtCopy.Location = new System.Drawing.Point(7, 226);
+            this.txtCopy.Name = "txtCopy";
+            this.txtCopy.Size = new System.Drawing.Size(288, 20);
+            this.txtCopy.TabIndex = 3;
+            // 
             // lstLog
             // 
             this.lstLog.FormattingEnabled = true;
@@ -85,18 +95,30 @@
             this.tmrPos.Interval = 500;
             this.tmrPos.Tick += new System.EventHandler(this.tmrPos_Tick);
             // 
-            // txtCopy
+            // txtUrl
             // 
-            this.txtCopy.Location = new System.Drawing.Point(7, 226);
-            this.txtCopy.Name = "txtCopy";
-            this.txtCopy.Size = new System.Drawing.Size(288, 20);
-            this.txtCopy.TabIndex = 3;
+            this.txtUrl.Location = new System.Drawing.Point(12, 12);
+            this.txtUrl.Name = "txtUrl";
+            this.txtUrl.Size = new System.Drawing.Size(1019, 20);
+            this.txtUrl.TabIndex = 4;
+            // 
+            // btnHtmlSource
+            // 
+            this.btnHtmlSource.Location = new System.Drawing.Point(900, 555);
+            this.btnHtmlSource.Name = "btnHtmlSource";
+            this.btnHtmlSource.Size = new System.Drawing.Size(131, 23);
+            this.btnHtmlSource.TabIndex = 5;
+            this.btnHtmlSource.Text = "Copy HTML Source";
+            this.btnHtmlSource.UseVisualStyleBackColor = true;
+            this.btnHtmlSource.Click += new System.EventHandler(this.btnHtmlSource_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1350, 556);
+            this.ClientSize = new System.Drawing.Size(1350, 589);
+            this.Controls.Add(this.btnHtmlSource);
+            this.Controls.Add(this.txtUrl);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.wbMain);
             this.Name = "Form1";
@@ -106,6 +128,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -117,6 +140,8 @@
         private System.Windows.Forms.ListBox lstLog;
         private System.Windows.Forms.Timer tmrPos;
         private System.Windows.Forms.TextBox txtCopy;
+        private System.Windows.Forms.TextBox txtUrl;
+        private System.Windows.Forms.Button btnHtmlSource;
     }
 }
 

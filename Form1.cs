@@ -44,6 +44,11 @@ namespace MonyDataMacro
             lstLog.Items.Add(s);
         }
 
+        void ErrorBox(Exception ex, string titleRow = "Error Occured")
+        {
+            MessageBox.Show(titleRow + "\n\n" + ex.Message + "\n\n" + ex.StackTrace.ToString());
+        }
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
 
@@ -276,6 +281,28 @@ namespace MonyDataMacro
             if (lstLog.SelectedItem != null)
             {
                 txtCopy.Text = lstLog.SelectedItem.ToString();
+            }
+        }
+
+        private void wbMain_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        {
+            Log(e.Url.ToString());
+            txtUrl.Text = e.Url.ToString();
+        }
+
+        private void btnHtmlSource_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var htmlElem = wbMain.Document.GetElementsByTagName("html")[0];
+                if (htmlElem != null)
+                {
+                    Clipboard.SetText(htmlElem.OuterHtml); // Copy to clipboard
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorBox(ex);
             }
         }
     }
