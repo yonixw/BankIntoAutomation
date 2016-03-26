@@ -74,7 +74,7 @@ namespace MonyDataMacro.InfoMine
             {
                 HtmlElementCollection cells = row.GetElementsByTagName("td");
 
-                if (row.GetAttribute("colspan") == "4")
+                if (cells[0].GetAttribute("colspan") == "4")
                 {
                     // It's a title of the category
                     currentCategory = row.InnerText;

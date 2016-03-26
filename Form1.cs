@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Validiation = MonyDataMacro.Validate;
+using Mining = MonyDataMacro.InfoMine;
 
 namespace MonyDataMacro
 {
@@ -37,6 +39,26 @@ namespace MonyDataMacro
         private void wbMain_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             groupBox1.Enabled = true;
+
+            if (wbMain.Url.AbsoluteUri == MonyDataMacro.Properties.Settings.Default.portalSite && FSM.State == FSM.PASS_CLICKED)
+            {
+                Validiation.IValidate bankMain = new Validiation.BankMainPageValidate();
+                bankMain.Init(wbMain.Document);
+                if (bankMain.IsValid())
+                {
+                    Log("Main page is valid");
+                    Mining.IInfoMine bankMaininfo = new Mining.BankMainPageInfoMain();
+                    bankMaininfo.Mine(wbMain.Document);
+                    FSM.IDLE.Set() ;
+                    MessageBox.Show(bankMaininfo.GetInfo<string>());
+                }
+                else
+                {
+                    Log("Main page is not valid, stopping.");
+                    FSM.IDLE.Set();
+                }
+            }
+
         }
 
         void Log(string s)
@@ -286,8 +308,8 @@ namespace MonyDataMacro
 
         private void wbMain_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            Log(e.Url.ToString());
-            txtUrl.Text = e.Url.ToString();
+            Log(e.Url.AbsoluteUri.ToString());
+            txtUrl.Text = e.Url.AbsoluteUri.ToString();
         }
 
         private void btnHtmlSource_Click(object sender, EventArgs e)
