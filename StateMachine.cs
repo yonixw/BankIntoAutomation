@@ -66,12 +66,18 @@ namespace MonyDataMacro
     public class WebFSM : StateMachine
     {
 
-        public State IDLE                                   ;
-        public State USERNAME_CLICK                         ;
-        public State USERNAME_CLICKED                       ;
-        public State PASS_CLICK                             ;
-        public State PASS_CLICKED                           ;
-        public State LOGIN_NAVIGATED                        ;
+        public State IDLE;
+        public State USERNAME_CLICK;
+        public State USERNAME_CLICKED;
+        public State PASS_CLICK;
+        public State PASS_CLICKED;
+        public State MAIN_BANK_NAVIGATED;
+        public State MAIN_BANK_MINED;
+        public State CREDIT_NAVIGATED;
+        public State CREDIT_MINED;
+        public State INFO_SAVED;
+        public State INFO_MAILED;
+
 
         public override void InitMachine()
         {

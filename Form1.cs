@@ -11,12 +11,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Validiation = MonyDataMacro.Validate;
 using Mining = MonyDataMacro.InfoMine;
+using PrivateData = MonyDataMacro.Properties.Settings;
 
 namespace MonyDataMacro
 {
 
     public partial class Form1 : Form
     {
+        string totalInfo = "";
+
         public Form1()
         {
             InitializeComponent();
@@ -40,7 +43,7 @@ namespace MonyDataMacro
         {
             groupBox1.Enabled = true;
 
-            if (wbMain.Url.AbsoluteUri == MonyDataMacro.Properties.Settings.Default.portalSite && FSM.State == FSM.PASS_CLICKED)
+            if (wbMain.Url.AbsoluteUri == PrivateData.Default.portalSite && FSM.State == FSM.MAIN_BANK_NAVIGATED)
             {
                 Validiation.IValidate bankMain = new Validiation.BankMainPageValidate();
                 bankMain.Init(wbMain.Document);
@@ -49,14 +52,24 @@ namespace MonyDataMacro
                     Log("Main page is valid");
                     Mining.IInfoMine bankMaininfo = new Mining.BankMainPageInfoMain();
                     bankMaininfo.Mine(wbMain.Document);
-                    FSM.IDLE.Set() ;
-                    MessageBox.Show(bankMaininfo.GetInfo<string>());
+
+                    totalInfo +=  bankMaininfo.GetInfo<string>();
+
+                    FSM.MAIN_BANK_MINED.Set() ;
+                    FSM.CREDIT_NAVIGATED.Set();
+
+                    wbMain.Navigate(PrivateData.Default.creditExternSite);
+                    //TODO: Make it ie11 and velidate and mine Credit site
                 }
                 else
                 {
                     Log("Main page is not valid, stopping.");
                     FSM.IDLE.Set();
                 }
+            }
+            else if ( wbMain.Url.AbsoluteUri == PrivateData.Default.creditSite && FSM.State == FSM.CREDIT_NAVIGATED )
+            {
+
             }
 
         }
@@ -142,6 +155,7 @@ namespace MonyDataMacro
         private void button1_Click(object sender, EventArgs e)
         {
             lstLog.Items.Clear();
+            totalInfo = "";
 
             try
             {
@@ -228,7 +242,7 @@ namespace MonyDataMacro
                     Log("Typing Password");
                     SendKeys.SendWait(MonyDataMacro.Properties.Settings.Default.password);
 
-                    FSM.PASS_CLICKED.Set();
+                    FSM.MAIN_BANK_NAVIGATED.Set();
                 }
                 else if (FSM.State == FSM.USERNAME_CLICKED)
                 {
