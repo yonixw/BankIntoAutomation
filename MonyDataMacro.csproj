@@ -52,11 +52,13 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="InfoMine\BankMainPageInfoMain.cs" />
+    <Compile Include="InfoMine\CreditListInfoMine.cs" />
     <Compile Include="InfoMine\IInfoMine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateMachine.cs" />
     <Compile Include="Validate\BankMainPageValidate.cs" />
+    <Compile Include="Validate\CreditListValidate.cs" />
     <Compile Include="Validate\IValidate.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

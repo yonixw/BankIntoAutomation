@@ -30,18 +30,28 @@ namespace MonyDataMacro
         void on_statechange(State news)
         {
             Log("Changerd to state: " + news.Description);
+            if (news == FSM.CREDIT_MINED)
+            {
+                button2.Enabled = true;
+                FSM.INFO_SAVED.Set();
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             FSM.InitMachine();
             State.StateChanged += on_statechange;
+            wbMain.ScriptErrorsSuppressed = true; // Supress credit card page js errors.
             wbMain.Navigate(new Uri(MonyDataMacro.Properties.Settings.Default.banksite));
         }
 
         private void wbMain_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             groupBox1.Enabled = true;
+
+            // Url checkin is here so logging should be here
+            Log(e.Url.AbsoluteUri.ToString());
+            txtUrl.Text = e.Url.AbsoluteUri.ToString(); 
 
             if (wbMain.Url.AbsoluteUri == PrivateData.Default.portalSite && FSM.State == FSM.MAIN_BANK_NAVIGATED)
             {
@@ -59,7 +69,6 @@ namespace MonyDataMacro
                     FSM.CREDIT_NAVIGATED.Set();
 
                     wbMain.Navigate(PrivateData.Default.creditExternSite);
-                    //TODO: Make it ie11 and velidate and mine Credit site
                 }
                 else
                 {
@@ -67,9 +76,25 @@ namespace MonyDataMacro
                     FSM.IDLE.Set();
                 }
             }
-            else if ( wbMain.Url.AbsoluteUri == PrivateData.Default.creditSite && FSM.State == FSM.CREDIT_NAVIGATED )
+            else if ( wbMain.Url.AbsoluteUri.StartsWith(PrivateData.Default.creditSiteAfterNavigation) && FSM.State == FSM.CREDIT_NAVIGATED )
             {
+                Validiation.IValidate creditMain = new Validiation.CreditListValidate();
+                creditMain.Init(wbMain.Document);
+                if (creditMain.IsValid())
+                {
+                    Log("Credit page is valid");
+                    Mining.IInfoMine creditMineInfo = new Mining.CreditListInfoMine();
+                    creditMineInfo.Mine(wbMain.Document);
 
+                    totalInfo += creditMineInfo.GetInfo<string>();
+
+                    FSM.CREDIT_MINED.Set();
+                }
+                else
+                {
+                    Log("Credit page is not valid, stopping.");
+                    FSM.IDLE.Set();
+                }
             }
 
         }
@@ -322,8 +347,7 @@ namespace MonyDataMacro
 
         private void wbMain_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            Log(e.Url.AbsoluteUri.ToString());
-            txtUrl.Text = e.Url.AbsoluteUri.ToString();
+           
         }
 
         private void btnHtmlSource_Click(object sender, EventArgs e)
@@ -340,6 +364,11 @@ namespace MonyDataMacro
             {
                 ErrorBox(ex);
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(totalInfo);
         }
     }
 }
