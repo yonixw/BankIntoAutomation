@@ -12,6 +12,9 @@ using System.Windows.Forms;
 using Validiation = MonyDataMacro.Validate;
 using Mining = MonyDataMacro.InfoMine;
 using PrivateData = MonyDataMacro.Properties.Settings;
+using System.Net;
+using System.IO;
+using System.Web.Script.Serialization;
 
 namespace MonyDataMacro
 {
@@ -34,6 +37,51 @@ namespace MonyDataMacro
             {
                 button2.Enabled = true;
                 FSM.INFO_SAVED.Set();
+            }
+
+            if (news == FSM.INFO_SAVED)
+            {
+                sendDataToPushbullet();
+                FSM.INFO_MAILED.Set();
+            }
+        }
+
+        public class Note
+        {
+            public string type = "note";
+            public string title = "Title here";
+            public string body = "Insert body here";
+        }
+
+        void sendDataToPushbullet()
+        {
+            // Sending dat to Pushbullet to "me"
+            //_______________________________________________
+
+            var httpWebRequest = WebRequest.Create("https://api.pushbullet.com/v2/pushes");
+            httpWebRequest.Headers.Add("Access-Token", PrivateData.Default.Auth);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                Note info = new Note();
+                info.title = "עדכון שבועי";
+                info.body = totalInfo;
+
+                string json = (new JavaScriptSerializer()).Serialize(info);
+                Console.WriteLine(json);
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+                Console.WriteLine(result);
             }
         }
 
@@ -63,7 +111,7 @@ namespace MonyDataMacro
                     Mining.IInfoMine bankMaininfo = new Mining.BankMainPageInfoMain();
                     bankMaininfo.Mine(wbMain.Document);
 
-                    totalInfo +=  bankMaininfo.GetInfo<string>();
+                    //totalInfo +=  bankMaininfo.GetInfo<string>();
 
                     FSM.MAIN_BANK_MINED.Set() ;
                     FSM.CREDIT_NAVIGATED.Set();

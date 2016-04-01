@@ -21,17 +21,16 @@ namespace MonyDataMacro.InfoMine
         private string GetInfoAsString()
         {
             string result = "";
-            int counter = 1;
-            foreach (CreditPurchase items in items)
+            for (int i = Math.Max(0, items.Count - 10); i< items.Count; i++)
             {
+                CreditPurchase item = items[i];
                 result +=
-                    "[" + counter + "]\n" +
-                    titlepurchaseDate + ": " + items.purchaseDate + "\n" +
-                    titlesupplierName + ": " + items.supplierName + "\n" +
-                    titledealSum + ": " + items.dealSum + "\n" +
-                    titlepaymentSum + ": " + items.paymentSum + "\n\n" 
+                    "[" + i + "]\n" +
+                    titlepurchaseDate + ": " + item.purchaseDate + "\n" +
+                    titlesupplierName + ": " + item.supplierName + "\n" +
+                    titledealSum + ": " + item.dealSum + "\n" +
+                    titlepaymentSum + ": " + item.paymentSum + "\n\n" 
                     ;
-                counter++;
             }
             return result;
         }
