@@ -52,7 +52,7 @@ namespace MonyDataMacro.InfoMine
             //return result;
 
             if (items.Count > 1)
-                return items[0].ToString();
+                return items[0].ToString() + "\n\n";
 
             return "";
         }
