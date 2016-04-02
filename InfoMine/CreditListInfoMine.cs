@@ -20,10 +20,11 @@ namespace MonyDataMacro.InfoMine
     {
         private string GetInfoAsString()
         {
+            CreditPurchase item;
             string result = "";
-            for (int i = Math.Max(0, items.Count - 10); i< items.Count; i++)
+            for (int i = Math.Max(0, items.Count - 10); i< items.Count - 1; i++)
             {
-                CreditPurchase item = items[i];
+                item = items[i];
                 //result +=
                 //    "[" + i + "]\n" +
                 //    titlepurchaseDate + ": " + item.purchaseDate + "\n" +
@@ -34,6 +35,12 @@ namespace MonyDataMacro.InfoMine
 
                 result += "(" + i + ") " + item.purchaseDate + ", " + item.supplierName + "," + item.paymentSum + '\n';
             }
+
+            // Last row has sum and date (not to logical order);
+            item = items.Last();
+            if (item != null)
+                result += "(סה\"כ) " + item.purchaseDate + ", " + item.supplierName + "," + item.dealSum + "," + item.paymentSum +  '\n';
+
             return result;
         }
 
