@@ -24,13 +24,15 @@ namespace MonyDataMacro.InfoMine
             for (int i = Math.Max(0, items.Count - 10); i< items.Count; i++)
             {
                 CreditPurchase item = items[i];
-                result +=
-                    "[" + i + "]\n" +
-                    titlepurchaseDate + ": " + item.purchaseDate + "\n" +
-                    titlesupplierName + ": " + item.supplierName + "\n" +
-                    titledealSum + ": " + item.dealSum + "\n" +
-                    titlepaymentSum + ": " + item.paymentSum + "\n\n" 
-                    ;
+                //result +=
+                //    "[" + i + "]\n" +
+                //    titlepurchaseDate + ": " + item.purchaseDate + "\n" +
+                //    titlesupplierName + ": " + item.supplierName + "\n" +
+                //    titledealSum + ": " + item.dealSum + "\n" +
+                //    titlepaymentSum + ": " + item.paymentSum + "\n\n" 
+                //    ;
+
+                result += "(" + i + ") " + item.purchaseDate + ", " + item.supplierName + "," + item.paymentSum + '\n';
             }
             return result;
         }

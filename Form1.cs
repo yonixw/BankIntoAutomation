@@ -111,7 +111,7 @@ namespace MonyDataMacro
                     Mining.IInfoMine bankMaininfo = new Mining.BankMainPageInfoMain();
                     bankMaininfo.Mine(wbMain.Document);
 
-                    //totalInfo +=  bankMaininfo.GetInfo<string>();
+                    totalInfo +=  bankMaininfo.GetInfo<string>();
 
                     FSM.MAIN_BANK_MINED.Set() ;
                     FSM.CREDIT_NAVIGATED.Set();

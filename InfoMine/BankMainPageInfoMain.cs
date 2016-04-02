@@ -17,7 +17,7 @@ namespace MonyDataMacro.InfoMine
 
         public override string ToString()
         {
-            return Category + ": " + ActivityType + ", " + Date + "\n" + MoneyLeft;
+            return  ActivityType + ", " + Date + ", " + MoneyLeft;
         }
     }
 
@@ -44,12 +44,17 @@ namespace MonyDataMacro.InfoMine
 
         private string GetInfoAsString() // If T is string
         {
-            string result = "";
-            foreach (BankMainPageItem item in items)
-            {
-                result += item.ToString();
-            }
-            return result;
+            //string result = "";
+            //foreach (BankMainPageItem item in items)
+            //{
+            //    result += item.ToString();
+            //}
+            //return result;
+
+            if (items.Count > 1)
+                return items[0].ToString();
+
+            return "";
         }
 
         private List<BankMainPageItem> GetInfoAsList()
