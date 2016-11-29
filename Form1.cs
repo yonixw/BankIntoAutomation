@@ -66,7 +66,7 @@ namespace MonyDataMacro
             Log(e.Url.AbsoluteUri.ToString());
             txtUrl.Text = e.Url.AbsoluteUri.ToString();
 
-            if (e.Url.AbsoluteUri == "https://online.fibi.co.il/wps/portal") {
+            if (e.Url.AbsoluteUri == PrivateData.Default.startTrigger) {
                 startProcess();
                 return;
             }
@@ -382,7 +382,12 @@ namespace MonyDataMacro
         {
             Clipboard.SetText(totalInfo);
         }
-        
+
         #endregion
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
     }
 }
