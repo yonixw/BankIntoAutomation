@@ -49,8 +49,8 @@ namespace MonyDataMacro
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            FSM.InitMachine();
             State.StateChanged += on_statechange;
+            FSM.InitMachine();
             wbMain.ScriptErrorsSuppressed = true; // Supress credit card page js errors.
             wbMain.Navigate(new Uri(MonyDataMacro.Properties.Settings.Default.banksite));
         }
@@ -110,9 +110,12 @@ namespace MonyDataMacro
         }
 
 
+        #region First Bank Page
+
         private void button1_Click(object sender, EventArgs e)
         {
             // Start Everything with main site of bank
+            // Click on user and then start the timer
 
             lstLog.Items.Clear();
             totalInfo = "";
@@ -139,7 +142,7 @@ namespace MonyDataMacro
 
                         if (!pos.Size.IsEmpty)
                         {
-                            Point ScreenPosition = wbMain.PointToScreen(new Point(pos.X + pos.Width / 2, pos.Y+3));
+                            Point ScreenPosition = wbMain.PointToScreen(new Point(pos.X + pos.Width / 2, pos.Y + 3));
                             Cursor.Position = ScreenPosition;
                             Log("Moved curser to position.");
 
@@ -198,7 +201,8 @@ namespace MonyDataMacro
 
                     FSM.USERNAME_CLICKED.Set();
                 }
-                else if(FSM.State == FSM.PASS_CLICK){
+                else if (FSM.State == FSM.PASS_CLICK)
+                {
                     Log("Typing Password");
                     SendKeys.SendWait(MonyDataMacro.Properties.Settings.Default.password);
 
@@ -217,35 +221,35 @@ namespace MonyDataMacro
                         //foreach (HtmlElement elem in allLabels)
                         //{
                         //    if (elem.InnerText == "סיסמא")
-                        if(elem != null)
+                        if (elem != null)
+                        {
+
+                            Log("Found pass label");
+                            Rectangle size = elem.ClientRectangle;
+
+                            Rectangle pos = Utils.findElemPosition(wbMain, elem, "LoginIframeTag");
+                            Log("Rectangle of label: (" + pos.X + "," + pos.Y + " " + pos.Width + "," + pos.Height + ")");
+
+                            if (!pos.Size.IsEmpty)
                             {
+                                Point ScreenPosition = wbMain.PointToScreen(new Point(pos.X + pos.Width / 2, pos.Y + 3));
+                                Cursor.Position = ScreenPosition;
+                                Log("Moved curser to position.");
 
-                                Log("Found pass label");
-                                Rectangle size = elem.ClientRectangle;
+                                Log("Clicking");
+                                Utils.DoMouseClick();
 
-                                Rectangle pos = Utils.findElemPosition(wbMain, elem, "LoginIframeTag");
-                                Log("Rectangle of label: (" + pos.X + "," + pos.Y + " " + pos.Width + "," + pos.Height + ")");
+                                FSM.PASS_CLICK.Set();
 
-                                if (!pos.Size.IsEmpty)
-                                {
-                                    Point ScreenPosition = wbMain.PointToScreen(new Point(pos.X + pos.Width / 2, pos.Y+3));
-                                    Cursor.Position = ScreenPosition;
-                                    Log("Moved curser to position.");
-
-                                    Log("Clicking");
-                                    Utils.DoMouseClick();
-
-                                    FSM.PASS_CLICK.Set();
-
-                                    labelFound = true;
-                                }
-                                else
-                                {
-                                    Log("Client area of login pass is empty.");
-                                }
-
-                                //break;
+                                labelFound = true;
                             }
+                            else
+                            {
+                                Log("Client area of login pass is empty.");
+                            }
+
+                            //break;
+                        }
                         //}
 
                         // Only if found username go on to password
@@ -271,6 +275,9 @@ namespace MonyDataMacro
 
             busy = false;
         }
+
+        #endregion
+
 
         #region GUI CODE
 

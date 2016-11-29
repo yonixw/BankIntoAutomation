@@ -18,6 +18,7 @@ namespace MonyDataMacro
             MessageBox.Show(titleRow + "\n\n" + ex.Message + "\n\n" + ex.StackTrace.ToString());
         }
 
+        #region DLL API for mouse click
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
 
@@ -32,7 +33,8 @@ namespace MonyDataMacro
             //int X = Cursor.Position.X;
             //int Y = Cursor.Position.Y;
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, (uint)Cursor.Position.X, (uint)Cursor.Position.Y, 0, 0);
-        }
+        } 
+        #endregion
 
         public static Rectangle findElemPosition(WebBrowser wbMain, HtmlElement elem, string frameId = "")
         {
