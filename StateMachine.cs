@@ -61,6 +61,23 @@ namespace MonyDataMacro
             return a.id != b.id;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (!(obj is State)) return false;
+            return this.id == ((State)obj).id;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.id;
+        }
+
+        public override string ToString()
+        {
+            return "(" + this.id.ToString() + ") " + this.Description;
+        }
+
+
     }
    
     public class WebFSM : StateMachine

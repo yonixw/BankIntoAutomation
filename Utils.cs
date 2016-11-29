@@ -73,8 +73,8 @@ namespace MonyDataMacro
             // Calculate the visible area of the element
             Rectangle elementWindow = new Rectangle(xoff, yoff, wbMain.ClientRectangle.Width, wbMain.ClientRectangle.Height);
 
-            Log("Scroll positon: " + scrollBarXPosition + "," + scrollBarYPosition);
-            Log("Scroll positon: " + xoff + "," + yoff);
+            Console.WriteLine("Scroll positon: " + scrollBarXPosition + "," + scrollBarYPosition);
+            Console.WriteLine("Scroll positon: " + xoff + "," + yoff);
 
             if (visibleWindow.IntersectsWith(elementWindow))
             {
