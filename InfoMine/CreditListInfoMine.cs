@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PrivateData = MonyDataMacro.Properties.Settings;
 
 namespace MonyDataMacro.InfoMine
 {
@@ -22,7 +23,7 @@ namespace MonyDataMacro.InfoMine
         {
             CreditPurchase item;
             string result = "";
-            for (int i = Math.Max(0, items.Count - 10); i< items.Count - 1; i++)
+            for (int i = Math.Max(0, items.Count - PrivateData.Default.creditInfoMaxRows); i< items.Count - 1; i++)
             {
                 item = items[i];
                 //result +=
