@@ -57,11 +57,14 @@ namespace MonyDataMacro
 
         private void wbMain_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
+            Console.WriteLine(e.Url);
+            //return;
+
             groupBox1.Enabled = true;
 
             // Url checkin is here so logging should be here
             Log(e.Url.AbsoluteUri.ToString());
-            txtUrl.Text = e.Url.AbsoluteUri.ToString(); 
+            txtUrl.Text = e.Url.AbsoluteUri.ToString();
 
             if (wbMain.Url.AbsoluteUri == PrivateData.Default.portalSite && FSM.State == FSM.MAIN_BANK_NAVIGATED)
             {
@@ -73,9 +76,9 @@ namespace MonyDataMacro
                     Mining.IInfoMine bankMaininfo = new Mining.BankMainPageInfoMain();
                     bankMaininfo.Mine(wbMain.Document);
 
-                    totalInfo +=  bankMaininfo.GetInfo<string>();
+                    totalInfo += bankMaininfo.GetInfo<string>();
 
-                    FSM.MAIN_BANK_MINED.Set() ;
+                    FSM.MAIN_BANK_MINED.Set();
                     FSM.CREDIT_NAVIGATED.Set();
 
                     wbMain.Navigate(PrivateData.Default.creditExternSite);
@@ -86,24 +89,47 @@ namespace MonyDataMacro
                     FSM.IDLE.Set();
                 }
             }
-            else if ( wbMain.Url.AbsoluteUri.StartsWith(PrivateData.Default.creditSiteAfterNavigation) && FSM.State == FSM.CREDIT_NAVIGATED )
+            else if (wbMain.Url.AbsoluteUri.StartsWith(PrivateData.Default.creditSitePrefix))
             {
-                Validiation.IValidate creditMain = new Validiation.CreditListValidate();
-                creditMain.Init(wbMain.Document);
-                if (creditMain.IsValid())
+                if (FSM.State == FSM.CREDIT_NAVIGATED)
                 {
-                    Log("Credit page is valid");
-                    Mining.IInfoMine creditMineInfo = new Mining.CreditListInfoMine();
-                    creditMineInfo.Mine(wbMain.Document);
+                    Validiation.IValidate creditMain = new Validiation.CreditListLandingPageValidate();
+                    creditMain.Init(wbMain.Document);
+                    if (creditMain.IsValid())
+                    {
+                        Log("Credit welcome page is valid");
 
-                    totalInfo += creditMineInfo.GetInfo<string>();
+                        wbMain.Navigate(PrivateData.Default.creditSiteDetails);
 
-                    FSM.CREDIT_MINED.Set();
+                        FSM.CREDIT_DETAILS.Set();
+                    }
+                    else
+                    {
+                        // Send partial on error
+                        Log("Credit welcome page is not valid, stopping.");
+                        totalInfo += "\nשגיאה בקריאת נתוני כרטיס";
+                        FSM.CREDIT_MINED.Set();
+                    }
                 }
-                else
+                // Must use `else if` or race condition can happen!
+                else if (FSM.State == FSM.CREDIT_DETAILS) 
                 {
-                    Log("Credit page is not valid, stopping.");
-                    FSM.IDLE.Set();
+                    Validiation.IValidate creditMain = new Validiation.CreditDetailsPageValidate();
+                    creditMain.Init(wbMain.Document);
+                    if (creditMain.IsValid())
+                    {
+                        Log("Credit welcome page is valid");
+
+                        
+                        // Stay in the same state for multi card solution:
+                        //FSM.CREDIT_DETAILS.Set();
+                    }
+                    else
+                    {
+                        // Send data gathered so far, if not valid dont show error.
+                        Log("Credit detail page is not valid or finished, stopping.");
+                        FSM.CREDIT_MINED.Set();
+                    }
                 }
             }
 
