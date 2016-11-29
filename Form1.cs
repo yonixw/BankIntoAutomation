@@ -42,6 +42,7 @@ namespace MonyDataMacro
             if (news == FSM.INFO_SAVED)
             {
                 PushBulletUpdate.sendDataToPushbullet(totalInfo);
+                //MessageBox.Show(totalInfo);
                 FSM.INFO_MAILED.Set();
             }
         }
@@ -55,16 +56,20 @@ namespace MonyDataMacro
             wbMain.Navigate(new Uri(MonyDataMacro.Properties.Settings.Default.banksite));
         }
 
+        int cardCount = 1; // How many time we moved the list forward.
+
         private void wbMain_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            Console.WriteLine(e.Url);
-            //return;
-
             groupBox1.Enabled = true;
 
             // Url checkin is here so logging should be here
             Log(e.Url.AbsoluteUri.ToString());
             txtUrl.Text = e.Url.AbsoluteUri.ToString();
+
+            if (e.Url.AbsoluteUri == "https://online.fibi.co.il/wps/portal") {
+                startProcess();
+                return;
+            }
 
             if (wbMain.Url.AbsoluteUri == PrivateData.Default.portalSite && FSM.State == FSM.MAIN_BANK_NAVIGATED)
             {
@@ -116,21 +121,45 @@ namespace MonyDataMacro
                 {
                     Validiation.IValidate creditMain = new Validiation.CreditDetailsPageValidate();
                     creditMain.Init(wbMain.Document);
-                    if (creditMain.IsValid())
+                    if (creditMain.IsValid()) // One card **OR** (Multi-card **AND** In bound)
                     {
                         Log("Credit details page is valid");
 
                         Mining.IInfoMine creditMine = new Mining.CreditDetailsPageMine();
                         creditMine.Mine(wbMain.Document);
 
-                        
+                        totalInfo += creditMine.GetInfo<string>();
+
+                        if (creditMine.GetInfo<bool>()) { // Multi card ** AND ** In bound
+                            
+                            // valid for mining again:
+                            if ((bool)wbMain.Document.InvokeScript("__nextListIndex"))
+                            {
+                                Log("Moving credit list to next");
+                                cardCount++;
+                            }
+                            else // Cant move index forward
+                            {
+                                Log("Credit detail page is finished (multi card).");
+                                totalInfo += "\nנמצאו: " + cardCount +" כרטיסים";
+                                FSM.CREDIT_MINED.Set();
+                            }
+                        }
+                        else
+                        {
+                            // Happen on one card when no list is presented
+                            Log("Credit detail page is finished (one card).");
+                            FSM.CREDIT_MINED.Set();
+                        }
+
                         // Stay in the same state for multi card solution:
                         //FSM.CREDIT_DETAILS.Set();
                     }
                     else
                     {
-                        // Send data gathered so far, if not valid dont show error.
+                        // Send data gathered so far
                         Log("Credit detail page is not valid or finished, stopping.");
+                        totalInfo += "\nשגיאה בקריאת נתוני כרטיס";
                         FSM.CREDIT_MINED.Set();
                     }
                 }
@@ -141,8 +170,7 @@ namespace MonyDataMacro
 
         #region First Bank Page
 
-        private void button1_Click(object sender, EventArgs e)
-        {
+        public void startProcess() {
             // Start Everything with main site of bank
             // Click on user and then start the timer
 
@@ -211,6 +239,11 @@ namespace MonyDataMacro
                 Log(ex.StackTrace);
                 FSM.IDLE.Set(); // Return to no state;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            startProcess();
         }
 
         bool busy = false;

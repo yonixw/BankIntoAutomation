@@ -1,7 +1,10 @@
 function __isIndexInbound() {
 	var elem = document.getElementById("CardIndex");
 	if (elem) {
-		return (elem.getElementsByTagName("option").length > parseInt(elem.value) );
+		var index = parseInt(elem.value);
+		var len = elem.getElementsByTagName("option").length;
+		//alert( "len:" + len + ",index:" + index);
+		return ( len > index  );
 	}
 	return false;
 }
@@ -10,11 +13,13 @@ function __nextListIndex() {
 	var elem = document.getElementById("CardIndex");
 	if (elem) {
 		var newIndex = parseInt(elem.value) + 1;
-		elem.value = newIndex.value;
+		elem.value = newIndex.toString();
 
 		// Only if index inbound try to show it.
 		if (elem.getElementsByTagName("option").length >  newIndex) {
 			showOnScreen();
+			return true;
 		}
-	}
+	} 
+	return false;
 }

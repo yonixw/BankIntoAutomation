@@ -46,13 +46,15 @@ namespace MonyDataMacro.InfoMine
             // Last row has sum and date (not to logical order);
             item = items.Last();
             if (item != null)
-                result += "(סה\"כ) " + item.purchaseDate + ", " + item.supplierName + "," + item.dealSum + "," + item.paymentSum +  '\n';
+                result += "(סה\"כ) " + item.purchaseDate + ", " + item.supplierName + "," + item.dealSum + "," + item.paymentSum + "\n\n";
 
             return result;
         }
 
         public T GetInfo<T>()
         {
+            // Each type gives another information about the mine (summerize, count, valid for next time)
+
             if (typeof(T) == typeof(string))
             {
                 return (T)Convert.ChangeType(
