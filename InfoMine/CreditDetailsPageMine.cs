@@ -17,7 +17,7 @@ namespace MonyDataMacro.InfoMine
 
     }
 
-    public class CreditListInfoMine : IInfoMine
+    public class CreditDetailsPageMine : IInfoMine
     {
         private string GetInfoAsString()
         {

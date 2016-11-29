@@ -9,6 +9,7 @@ namespace MonyDataMacro.InfoMine
 {
     public interface IInfoMine
     {
+        
         void Mine(HtmlDocument mainDocument);
         T GetInfo<T>();
     }

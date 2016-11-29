@@ -63,7 +63,7 @@
     <Compile Include="StateMachine.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Validate\BankMainPageValidate.cs" />
-    <Compile Include="Validate\CreditListValidate.cs" />
+    <Compile Include="Validate\CreditListLandingPageValidate.cs" />
     <Compile Include="Validate\IValidate.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

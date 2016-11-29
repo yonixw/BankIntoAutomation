@@ -88,10 +88,20 @@ namespace MonyDataMacro
         public State USERNAME_CLICKED;
         public State PASS_CLICK;
         public State PASS_CLICKED;
+
+
         public State MAIN_BANK_NAVIGATED;
         public State MAIN_BANK_MINED;
+
+
         public State CREDIT_NAVIGATED;
+
+        public State CREDIT_DETAILS;    // Go to details pae
+        public State CREDIT_LIST_MINING; // Continue to mine the list (or the page if no list)
+
         public State CREDIT_MINED;
+
+
         public State INFO_SAVED;
         public State INFO_MAILED;
 
