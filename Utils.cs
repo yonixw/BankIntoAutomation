@@ -85,5 +85,12 @@ namespace MonyDataMacro
                 return new Rectangle(-1, -1, 0, 0);
             }
         }
+
+        public static void AddScript(string script, HtmlDocument doc) {            
+            HtmlElement head = doc.GetElementsByTagName("head")[0];
+            HtmlElement s = doc.CreateElement("script");
+            s.SetAttribute("text", script);
+            head.AppendChild(s);
+        }
     }
 }

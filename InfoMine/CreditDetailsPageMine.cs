@@ -15,15 +15,21 @@ namespace MonyDataMacro.InfoMine
         public string dealSum;
         public string paymentSum;
 
+        public override string ToString()
+        {
+            return this.purchaseDate + ", " + this.supplierName + "," + this.paymentSum;
+        }
     }
 
     public class CreditDetailsPageMine : IInfoMine
     {
+        public static int MaxRows = PrivateData.Default.creditInfoMaxRows;
         private string GetInfoAsString()
         {
             CreditPurchase item;
             string result = "";
-            for (int i = Math.Max(0, items.Count - PrivateData.Default.creditInfoMaxRows); i< items.Count - 1; i++)
+
+            for (int i = Math.Max(0, items.Count - MaxRows); i< items.Count - 1; i++)
             {
                 item = items[i];
                 //result +=
@@ -34,7 +40,7 @@ namespace MonyDataMacro.InfoMine
                 //    titlepaymentSum + ": " + item.paymentSum + "\n\n" 
                 //    ;
 
-                result += "(" + i + ") " + item.purchaseDate + ", " + item.supplierName + "," + item.paymentSum + '\n';
+                result += "(" + i + ") " + item.ToString() + '\n';
             }
 
             // Last row has sum and date (not to logical order);
@@ -49,10 +55,23 @@ namespace MonyDataMacro.InfoMine
         {
             if (typeof(T) == typeof(string))
             {
-                return (T)Convert.ChangeType(GetInfoAsString(), typeof(T));
+                return (T)Convert.ChangeType(
+                    GetInfoAsString()
+                    , typeof(T));
+            }
+            else if (typeof(T) == typeof(int)) {
+                return (T)Convert.ChangeType(
+                    items.Count
+                    ,typeof(T));
+            }
+            else if (typeof(T) == typeof(bool))
+            {
+                return (T)Convert.ChangeType(
+                    CreditCardValid
+                    , typeof(T));
             }
 
-            throw new NotImplementedException("Cant convert CreditPurchases to object");
+            throw new NotImplementedException("Cant convert CreditPurchases to object " + typeof(T).ToString());
         }
 
         // I only care about the four cells at the start of each row.
@@ -72,8 +91,11 @@ namespace MonyDataMacro.InfoMine
             return result;
         }
 
+        bool CreditCardValid; // Exist and in the range
         public void Mine(HtmlDocument mainDocument)
         {
+            CreditCardValid = (bool)mainDocument.InvokeScript("__isIndexInbound");
+
             // Start new instance
             titlepurchaseDate = "";
             titlesupplierName   = "";

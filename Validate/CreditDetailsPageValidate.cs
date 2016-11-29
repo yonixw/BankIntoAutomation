@@ -23,6 +23,18 @@ namespace MonyDataMacro.Validate
             }
 
             // Note: Dont use card list <select> element, it doesn't exit with one card
+
+            Utils.AddScript(MonyDataMacro.Properties.Resources.CreditListJSCode, mainDocument);
+            HtmlElement cardList = mainDocument.GetElementById("CardIndex");
+            if (cardList != null) { 
+                if (!(bool)mainDocument.InvokeScript("__isIndexInbound")) {
+                    // If list exists and we our out of bound, stop and sy not valid.
+                    Console.WriteLine("Card list exists but out of bound");
+                    isValid = false;
+                }
+            }
+
+            
         }
 
         public bool IsValid()

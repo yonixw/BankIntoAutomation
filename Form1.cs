@@ -118,7 +118,10 @@ namespace MonyDataMacro
                     creditMain.Init(wbMain.Document);
                     if (creditMain.IsValid())
                     {
-                        Log("Credit welcome page is valid");
+                        Log("Credit details page is valid");
+
+                        Mining.IInfoMine creditMine = new Mining.CreditDetailsPageMine();
+                        creditMine.Mine(wbMain.Document);
 
                         
                         // Stay in the same state for multi card solution:

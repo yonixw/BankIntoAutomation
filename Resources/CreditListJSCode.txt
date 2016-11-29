@@ -1,0 +1,20 @@
+function __isIndexInbound() {
+	var elem = document.getElementById("CardIndex");
+	if (elem) {
+		return (elem.getElementsByTagName("option").length > parseInt(elem.value) );
+	}
+	return false;
+}
+
+function __nextListIndex() {
+	var elem = document.getElementById("CardIndex");
+	if (elem) {
+		var newIndex = parseInt(elem.value) + 1;
+		elem.value = newIndex.value;
+
+		// Only if index inbound try to show it.
+		if (elem.getElementsByTagName("option").length >  newIndex) {
+			showOnScreen();
+		}
+	}
+}
