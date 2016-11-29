@@ -204,7 +204,8 @@ namespace MonyDataMacro
                 else if (FSM.State == FSM.PASS_CLICK)
                 {
                     Log("Typing Password");
-                    SendKeys.SendWait(MonyDataMacro.Properties.Settings.Default.password);
+                    // Press enter after pass to submit
+                    SendKeys.SendWait(MonyDataMacro.Properties.Settings.Default.password + "{ENTER}"); 
 
                     FSM.MAIN_BANK_NAVIGATED.Set();
                 }
