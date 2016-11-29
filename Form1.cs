@@ -41,49 +41,11 @@ namespace MonyDataMacro
 
             if (news == FSM.INFO_SAVED)
             {
-                sendDataToPushbullet();
+                PushBulletUpdate.sendDataToPushbullet(totalInfo);
                 FSM.INFO_MAILED.Set();
             }
         }
 
-        public class Note
-        {
-            public string type = "note";
-            public string title = "Title here";
-            public string body = "Insert body here";
-        }
-
-        void sendDataToPushbullet()
-        {
-            // Sending dat to Pushbullet to "me"
-            //_______________________________________________
-
-            var httpWebRequest = WebRequest.Create("https://api.pushbullet.com/v2/pushes");
-            httpWebRequest.Headers.Add("Access-Token", PrivateData.Default.Auth);
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "POST";
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                Note info = new Note();
-                info.title = "עדכון שבועי";
-                info.body = totalInfo;
-
-                string json = (new JavaScriptSerializer()).Serialize(info);
-                Console.WriteLine(json);
-
-                streamWriter.Write(json);
-                streamWriter.Flush();
-                streamWriter.Close();
-            }
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                var result = streamReader.ReadToEnd();
-                Console.WriteLine(result);
-            }
-        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -147,86 +109,11 @@ namespace MonyDataMacro
 
         }
 
-        void Log(string s)
-        {
-            lstLog.Items.Add(s);
-        }
-
-        void ErrorBox(Exception ex, string titleRow = "Error Occured")
-        {
-            MessageBox.Show(titleRow + "\n\n" + ex.Message + "\n\n" + ex.StackTrace.ToString());
-        }
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
-
-        private const int MOUSEEVENTF_LEFTDOWN = 0x02;
-        private const int MOUSEEVENTF_LEFTUP = 0x04;
-        private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
-        private const int MOUSEEVENTF_RIGHTUP = 0x10;
-
-        public void DoMouseClick()
-        {
-            //Call the imported function with the cursor's current position
-            //int X = Cursor.Position.X;
-            //int Y = Cursor.Position.Y;
-            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, (uint)Cursor.Position.X, (uint)Cursor.Position.Y, 0, 0);
-        }
-
-        Rectangle findElemPosition(HtmlElement elem,string frameId = "")
-        {
-            // Calculate the offset of the element, all the way up through the parent nodes
-            var parent = elem.OffsetParent;
-            int xoff = elem.OffsetRectangle.X;
-            int yoff = elem.OffsetRectangle.Y;
-            Rectangle elemSize = elem.ClientRectangle;
-
-            while (parent != null)
-            {
-                xoff += parent.OffsetRectangle.X;
-                yoff += parent.OffsetRectangle.Y;
-                parent = parent.OffsetParent;
-            }
-
-            if (frameId != "")
-            {
-                parent = wbMain.Document.GetElementById(frameId).OffsetParent;
-                while (parent != null)
-                {
-                    xoff += parent.OffsetRectangle.X;
-                    yoff += parent.OffsetRectangle.Y;
-                    parent = parent.OffsetParent;
-                }
-            }
-
-
-            // Get the scrollbar offsets
-            int scrollBarYPosition = wbMain.Document.GetElementsByTagName("HTML")[0].ScrollTop;
-            int scrollBarXPosition = wbMain.Document.GetElementsByTagName("HTML")[0].ScrollLeft;
-
-            // Calculate the visible page space
-            Rectangle visibleWindow = new Rectangle(scrollBarXPosition, scrollBarYPosition, wbMain.Width, wbMain.Height);
-
-            // Calculate the visible area of the element
-            Rectangle elementWindow = new Rectangle(xoff, yoff, wbMain.ClientRectangle.Width, wbMain.ClientRectangle.Height);
-
-            Log("Scroll positon: " + scrollBarXPosition + "," + scrollBarYPosition);
-            Log("Scroll positon: " + xoff + "," + yoff);
-
-            if (visibleWindow.IntersectsWith(elementWindow))
-            {
-                return new Rectangle(xoff - scrollBarXPosition, yoff - scrollBarYPosition,elemSize.Width, elemSize.Height);
-            }
-            else
-            {
-                return new Rectangle(-1, -1,0,0);
-            }
-        }
-
-      
 
         private void button1_Click(object sender, EventArgs e)
         {
+            // Start Everything with main site of bank
+
             lstLog.Items.Clear();
             totalInfo = "";
 
@@ -247,7 +134,7 @@ namespace MonyDataMacro
                         Log("Found username label");
                         Rectangle size = elem.ClientRectangle;
 
-                        Rectangle pos = findElemPosition(elem, "LoginIframeTag");
+                        Rectangle pos = Utils.findElemPosition(wbMain, elem, "LoginIframeTag");
                         Log("Rectangle of label: (" + pos.X + "," + pos.Y + " " + pos.Width + "," + pos.Height + ")");
 
                         if (!pos.Size.IsEmpty)
@@ -257,7 +144,7 @@ namespace MonyDataMacro
                             Log("Moved curser to position.");
 
                             Log("Clicking");
-                            DoMouseClick();
+                            Utils.DoMouseClick();
 
                             FSM.USERNAME_CLICK.Set();
 
@@ -265,7 +152,7 @@ namespace MonyDataMacro
                         }
                         else
                         {
-                            Log("Client area of login username is empty.");
+                            Log("Client rea of login username is empty.");
                         }
 
                         //break;
@@ -336,7 +223,7 @@ namespace MonyDataMacro
                                 Log("Found pass label");
                                 Rectangle size = elem.ClientRectangle;
 
-                                Rectangle pos = findElemPosition(elem, "LoginIframeTag");
+                                Rectangle pos = Utils.findElemPosition(wbMain, elem, "LoginIframeTag");
                                 Log("Rectangle of label: (" + pos.X + "," + pos.Y + " " + pos.Width + "," + pos.Height + ")");
 
                                 if (!pos.Size.IsEmpty)
@@ -346,7 +233,7 @@ namespace MonyDataMacro
                                     Log("Moved curser to position.");
 
                                     Log("Clicking");
-                                    DoMouseClick();
+                                    Utils.DoMouseClick();
 
                                     FSM.PASS_CLICK.Set();
 
@@ -385,6 +272,13 @@ namespace MonyDataMacro
             busy = false;
         }
 
+        #region GUI CODE
+
+        public void Log(string s)
+        {
+            lstLog.Items.Add(s);
+        }
+
         private void lstLog_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lstLog.SelectedItem != null)
@@ -410,7 +304,7 @@ namespace MonyDataMacro
             }
             catch (Exception ex)
             {
-                ErrorBox(ex);
+                Utils.ErrorBox(ex);
             }
         }
 
@@ -418,5 +312,7 @@ namespace MonyDataMacro
         {
             Clipboard.SetText(totalInfo);
         }
+        
+        #endregion
     }
 }
