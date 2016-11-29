@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+        <sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=XXXXXXXXXX" >
+            <section name="MonyDataMacro.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=XXXXXXXXXX" requirePermission="false" />
+        </sectionGroup>
+    </configSections>
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" />
+    </startup>
+    <applicationSettings>
+        <MonyDataMacro.Properties.Settings>
+            <setting name="username" serializeAs="String">
+                <value>USER</value>
+            </setting>
+            <setting name="password" serializeAs="String">
+                <value>PASS</value>
+            </setting>
+            <setting name="banksite" serializeAs="String">
+                <value>https://www.fibi-online.co.il</value>
+            </setting>
+            <setting name="portalSite" serializeAs="String">
+                <value>https://online.fibi.co.il/wps/myportal/FibiMenu/Online</value>
+            </setting>
+            <setting name="creditSite" serializeAs="String">
+                <value>https://online.fibi.co.il/wps/myportal/FibiMenu/Online/OnCreditCardsMenu/OnCrCardsDetPayms/AuthCrCardsCharges</value>
+            </setting>
+            <setting name="creditExternSite" serializeAs="String">
+                <value>https://online.fibi.co.il/MatafServiceServlets/CreditCardServlet?XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</value>
+            </setting>
+            <setting name="creditSiteDetails" serializeAs="String">
+                <value>https://service.isracard.co.il/isracard/isracard?reqName=DealsListForDate_203</value>
+            </setting>
+            <setting name="Auth" serializeAs="String">
+                <value>o.AAAAAAAAAAA000000000000000000000</value>
+            </setting>
+            <setting name="creditInfoMaxRows" serializeAs="String">
+                <value>10</value>
+            </setting>
+            <setting name="creditSitePrefix" serializeAs="String">
+                <value>https://service.isracard.co.il/isracard/isracard</value>
+            </setting>
+            <setting name="startTrigger" serializeAs="String">
+                <value>https://online.fibi.co.il/wps/portal</value>
+            </setting>
+        </MonyDataMacro.Properties.Settings>
+    </applicationSettings>
+</configuration>
