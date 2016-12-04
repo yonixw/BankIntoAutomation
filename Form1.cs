@@ -45,19 +45,23 @@ namespace MonyDataMacro
                 //MessageBox.Show(totalInfo);
                 FSM.INFO_MAILED.Set();
             }
+
+            if (news == FSM.INFO_MAILED) {
+                Application.Exit(); // Sucessfull
+            }
         }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Minimized;
+
             State.StateChanged += on_statechange;
             FSM.InitMachine();
             wbMain.ScriptErrorsSuppressed = true; // Supress credit card page js errors.
             wbMain.Navigate(new Uri(MonyDataMacro.Properties.Settings.Default.banksite));
 
-            // Jump to front
-            this.TopMost = true;
-            this.TopMost = false;
+           
         }
 
         int cardCount = 1; // How many time we moved the list forward.
@@ -177,6 +181,9 @@ namespace MonyDataMacro
         public void startProcess() {
             // Start Everything with main site of bank
             // Click on user and then start the timer
+
+            this.WindowState = FormWindowState.Normal;
+
             // Jump to front
             this.TopMost = true;
             this.TopMost = false;
