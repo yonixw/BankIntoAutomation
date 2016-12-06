@@ -44,9 +44,12 @@ namespace MonyDataMacro.InfoMine
             }
 
             // Last row has sum and date (not to logical order);
-            item = items.Last();
-            if (item != null)
+
+            if (items != null && items.Count > 0)
+            {
+                item = items.Last();
                 result += "(סה\"כ) " + item.purchaseDate + ", " + item.supplierName + "," + item.dealSum + "," + item.paymentSum + "\n\n";
+            }
 
             return result;
         }

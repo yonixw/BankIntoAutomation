@@ -32,6 +32,12 @@ namespace MonyDataMacro.Validate
                     Console.WriteLine("Card list exists but out of bound");
                     isValid = false;
                 }
+                else if (!isValid) {
+                    // If no purchase, no table.
+                    // But still need to go to next one.
+                    // So allow it if index is in bound, and IMine will ignore due to not finding <tr>
+                    isValid = true; 
+                }
             }
 
             
