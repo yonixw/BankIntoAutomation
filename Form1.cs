@@ -191,6 +191,7 @@ namespace MonyDataMacro
             lstLog.Items.Clear();
             totalInfo = "";
 
+            Point startMousePoint =  Cursor.Position;
             try
             {
                 var frame = wbMain.Document.Window.Frames["LoginIframeTag"];
@@ -253,6 +254,8 @@ namespace MonyDataMacro
                 Log(ex.StackTrace);
                 FSM.IDLE.Set(); // Return to no state;
             }
+
+            Cursor.Position = startMousePoint;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -309,6 +312,8 @@ namespace MonyDataMacro
 
                             if (!pos.Size.IsEmpty)
                             {
+                                Point startMousePoint = Cursor.Position;
+
                                 Point ScreenPosition = wbMain.PointToScreen(new Point(pos.X + pos.Width / 2, pos.Y + 3));
                                 Cursor.Position = ScreenPosition;
                                 Log("Moved curser to position.");
@@ -319,6 +324,8 @@ namespace MonyDataMacro
                                 FSM.PASS_CLICK.Set();
 
                                 labelFound = true;
+
+                                Cursor.Position = startMousePoint;
                             }
                             else
                             {
