@@ -129,7 +129,7 @@ namespace MonyDataMacro
                 {
                     Validiation.IValidate creditMain = new Validiation.CreditDetailsPageValidate();
                     creditMain.Init(wbMain.Document);
-                    if (creditMain.IsValid()) // One card **OR** (Multi-card **AND** In bound)
+                    if (creditMain.IsValid()) // One card **OR** (Multi-card **AND** In bound) 
                     {
                         Log("Credit details page is valid");
 
@@ -167,7 +167,7 @@ namespace MonyDataMacro
                     {
                         // Send data gathered so far
                         Log("Credit detail page is not valid or finished, stopping.");
-                        totalInfo += "\nשגיאה בקריאת נתוני כרטיס";
+                        totalInfo += "\nשגיאה בקריאת נתוני כרטיס\nאולי אין עדיין רכישות?";
                         FSM.CREDIT_MINED.Set();
                     }
                 }
