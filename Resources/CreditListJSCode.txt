@@ -9,11 +9,25 @@ function __isIndexInbound() {
 	return false;
 }
 
+function __getListSelectedName() {
+	var elem = document.getElementById("CardIndex");
+	if (elem) {
+		// SO? 610336
+		 var options = elem.getElementsByTagName("option");
+		 if (elem.selectedIndex >= 0  && elem.selectedIndex < options.length) {
+			return options[elem.selectedIndex].innerText;
+		 }
+		 return "out of bounds";
+
+	}
+	return "null";
+}
+
 function __nextListIndex() {
 	var elem = document.getElementById("CardIndex");
 	if (elem) {
-		var newIndex = parseInt(elem.value) + 1;
-		elem.value = newIndex.toString();
+		var newIndex = elem.selectedIndex + 1 //parseInt(elem.value) + 1;
+		elem.selectedIndex = newIndex;
 
 		// Only if index inbound try to show it.
 		if (elem.getElementsByTagName("option").length >  newIndex) {
