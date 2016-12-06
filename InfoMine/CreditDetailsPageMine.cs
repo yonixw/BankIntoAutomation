@@ -8,7 +8,9 @@ using PrivateData = MonyDataMacro.Properties.Settings;
 
 namespace MonyDataMacro.InfoMine
 {
-    class CreditPurchase
+
+   
+    class CreditPurchase 
     {
         public string purchaseDate;
         public string supplierName;
@@ -18,6 +20,14 @@ namespace MonyDataMacro.InfoMine
         public override string ToString()
         {
             return this.purchaseDate + ", " + this.supplierName + "," + this.paymentSum;
+        }
+    }
+
+    class CreditNameInfo : CreditPurchase {
+        public string cardInfo;
+        public override string ToString()
+        {
+            return this.cardInfo;
         }
     }
 
@@ -48,7 +58,7 @@ namespace MonyDataMacro.InfoMine
             if (items != null && items.Count > 0)
             {
                 item = items.Last();
-                result += "(סה\"כ) " + item.purchaseDate + ", " + item.supplierName + "," + item.dealSum + "," + item.paymentSum + "\n\n";
+                result += "(סיכום) " + item.ToString() + "," + item.dealSum + "\n\n";
             }
 
             return result;
@@ -100,6 +110,7 @@ namespace MonyDataMacro.InfoMine
         public void Mine(HtmlDocument mainDocument)
         {
             CreditCardValid = (bool)mainDocument.InvokeScript("__isIndexInbound");
+           
 
             // Start new instance
             titlepurchaseDate = "";
@@ -107,6 +118,12 @@ namespace MonyDataMacro.InfoMine
             titledealSum        = "";
             titlepaymentSum     = "";
             items.Clear();
+
+            if (CreditCardValid)
+            {
+                // Add name of card from list
+                items.Add(new CreditNameInfo() { cardInfo = (string)mainDocument.InvokeScript("__getListSelectedName") });
+            }
 
             // First we find the title row:
             HtmlElement row = null;
